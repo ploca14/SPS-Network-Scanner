@@ -1,8 +1,17 @@
 #! /usr/bin/env python
-from scapy.all import ARP, sniff
+from scapy.all import *
+import logging
 
-def arp_monitor_callback(pkt):
-    if ARP in pkt and pkt[ARP].op in (1,2): #who-has or is-at
-        return pkt.sprintf("%ARP.hwsrc% %ARP.psrc%")
+logging.basicConfig(level=logging.DEBUG)
+
+cache = []
+def updateCache(pkt):
+    cache.append(pkt)
+
+def arp_monitor_callback(pkt): #who-has or is-at
+    updateCache(pkt)
+    logging.info(pkt.sprintf(" Sniffed arp packet from: %ARP.hwsrc% %ARP.psrc%"))
+
 
 sniff(prn=arp_monitor_callback, filter="arp", store=0)
+#wrpcap na ulozeni historie na disk (pokud bude program resetovany)
