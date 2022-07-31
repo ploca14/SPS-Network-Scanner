@@ -38,4 +38,4 @@ You can now see if your service is running with: `sudo systemctl status arp-netw
 
 1. Start the service and keep it running.
 
-2. To list the unused IPs you can use the evaluation script `python /usr/local/lib/arp-network-scanner/evaluate.py`
+2. To list the unused IPs you can use the evaluation script `/usr/local/lib/arp-network-scanner/venv3/bin/python3 /usr/local/lib/arp-network-scanner/evaluate.py`
