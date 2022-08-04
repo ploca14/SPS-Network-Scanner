@@ -2,8 +2,11 @@
 
 mkdir /usr/local/lib/arp-network-scanner
 cp requirements.txt evaluate.py scanner.py service.py /usr/local/lib/arp-network-scanner
+cp evaluate /usr/bin
 chown root:root /usr/local/lib/arp-network-scanner/service.py
+chown root:root /usr/bin/evaluate
 chmod 644 /usr/local/lib/arp-network-scanner/service.py
+chmod +x /usr/bin/evaluate
 
 cp -v arp-network-scanner.service /etc/systemd/system/
 chown root:root /etc/systemd/system/arp-network-scanner.service

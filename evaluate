@@ -1,3 +1,29 @@
 #!/bin/bash
+#set defaults
+UNIT="w"
+LENGTH="2"
 
-/usr/local/lib/arp-network-scanner/venv3/bin/python3 /usr/local/lib/arp-network-scanner/evaluate.py
+#switch case depending on unit
+case $1 in
+  -d| --d)
+    UNIT="d"
+    LENGTH="$2"
+    ;;
+  -w| --week)
+    UNIT="w"
+    LENGTH="$2"
+    ;;
+  -m| --month)
+    UNIT="m"
+    LENGTH="$2"
+    ;;
+  -*|--*)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
+  *)
+    ;;
+esac
+
+#launch python app
+/usr/local/lib/arp-network-scanner/venv3/bin/python3 /usr/local/lib/arp-network-scanner/evaluate.py ${UNIT} ${LENGTH}
