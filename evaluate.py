@@ -6,7 +6,7 @@ from tabulate import *
 
 serialization = SerializationMiddleware(JSONStorage)
 serialization.register_serializer(DateTimeSerializer(), 'TinyDate')
-db = TinyDB('db.json', storage=serialization)
+db = TinyDB('/usr/local/lib/arp-network-scanner/db.json', storage=serialization)
 
 headers = {
     "ip": "IP",
