@@ -17,6 +17,9 @@ case $1 in
     UNIT="m"
     LENGTH="$2"
     ;;
+  -a| --all)
+    UNIT="a"
+    ;;
   -*|--*)
     echo "Unknown option: $1"
     exit 1
