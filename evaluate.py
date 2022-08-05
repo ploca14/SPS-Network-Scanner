@@ -42,7 +42,8 @@ db = TinyDB('db.json', storage=serialization)
 headers = {
     "ip": "IP",
     "mac": "MAC",
-    "lastSeen": "Last Seen"
+    "lastSeen": "Last Seen",
+    "iface": "Interface"
 }
 
 # results = sorted(db.all(),  key=lambda k: socket.inet_aton(k['ip'])) # Sort by ip

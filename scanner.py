@@ -22,9 +22,11 @@ def arp_monitor_callback(pkt):
     if ARP in pkt:
         ip = pkt.sprintf("%ARP.psrc%")
         mac = pkt.sprintf("%ARP.hwsrc%")
+        iface = pkt.sniffed_on.description
 
         Record = Query()
         db.upsert({
+            'iface': iface,
             'ip': ip,
             'mac': mac,
             'lastSeen': datetime.now(),
