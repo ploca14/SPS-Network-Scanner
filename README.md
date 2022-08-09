@@ -13,6 +13,7 @@ A python linux service for monitoring and finding unused IP address bindings
 1. Clone this repo and cd into it
     - `$ git clone git@gitlab.fel.cvut.cz:plocivoj/arp-network-scanner.git`
     - `$ cd arp-network-scanner`
+    - **Note: on Debian based systems you might need to install an addition package called python3.x-venv where x depends on your version of Python. You can check your Python version with `python3 --version`** This is a requirement for installation of a Python virtual environment.
 
 2. Run our installation script as root `# ./install.sh`
 
