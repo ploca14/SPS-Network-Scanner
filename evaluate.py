@@ -1,14 +1,17 @@
 import datetime
+import itertools
 from tinydb import TinyDB
 from tinydb.storages import JSONStorage
 from tinydb_serialization import SerializationMiddleware
 from tinydb_serialization.serializers import DateTimeSerializer
-from tabulate import *
+from tabulate import tabulate
+from scapy.all import get_working_ifaces
+import ipaddress
 import sys
 
 args = sys.argv
 
-if not len(args) in range(1, 4):
+if not len(args) in range(2, 4):
     raise AttributeError("Invalid arguments.")
 
 unit = args[1]
@@ -47,16 +50,26 @@ headers = {
 }
 
 # results = sorted(db.all(),  key=lambda k: socket.inet_aton(k['ip'])) # Sort by ip
-results = sorted(db.all(),  key=lambda k: k['lastSeen'])
+results = sorted(db.all(), key=lambda k: k['iface'])
+
+if_addresses = [('eth0', '192.168.43.0/26'), ('eht1', '192.168.43.64/26')]
+empty_results = []
+
+for if_address in if_addresses:
+    iface = if_address[0]
+    network = ipaddress.IPv4Network(if_address[1], False)
+    for ip in network.hosts():
+        empty_results.append({
+            'iface': iface,
+            'ip': str(ip),
+            'mac': None,
+            'lastSeen': 'Never'
+        })
 
 if listAll:
     print(tabulate(results, headers=headers))
     exit(0)
 
-filteredResults = []
-
-for result in results:
-    if result.get('lastSeen') <= dateLimit:
-        filteredResults.append(result)
+filteredResults = filter(lambda result: result.get('lastSeen') <= dateLimit, results)
 
 print(tabulate(filteredResults, headers=headers))
