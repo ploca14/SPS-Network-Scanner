@@ -33,7 +33,7 @@ You can now see if your service is running with: `# systemctl status arp-network
 
 ## How it works
 
-Once you start the service the Python script will constantly monitor all interfaces on a machine and on every ARP request it sees it will store the IP binding and timestamp to a small database. The `evalrp` command then evaluates the data in the database, showing you which IPs have not been used for a specified amount of time.
+Once you start the service the Python script will constantly monitor all interfaces on a machine and on every ARP request it sees it will store the IP binding and timestamp to a small database. The `evalarp` command then evaluates the data in the database, showing you which IPs have not been used for a specified amount of time.
 
 ## Credits
 
