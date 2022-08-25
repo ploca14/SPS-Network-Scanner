@@ -1,19 +1,12 @@
-
-# ARP Network Scanner
+### Description
 
 A python linux service for monitoring and finding unused IP address bindings
 
-## Authors
-
-- [@plocivoj](https://gitlab.fel.cvut.cz/plocivoj)
-- [@svorcjak](https://gitlab.fel.cvut.cz/svorcjak)
-
-## Installation
+### Install
 
 1. Clone this repo and cd into it
     - `$ git clone git@gitlab.fel.cvut.cz:plocivoj/arp-network-scanner.git`
     - `$ cd arp-network-scanner`
-    - **Note: on Debian based systems you might need to install an addition package called python3.x-venv where x depends on your version of Python. You can check your Python version with `python3 --version`** This is a requirement for installation of a Python virtual environment.
 
 2. Run our installation script as root `# ./install.sh`
 
@@ -23,13 +16,20 @@ A python linux service for monitoring and finding unused IP address bindings
 4. Enable the service at boot (so it starts when the system starts)
     - `# systemctl enable arp-network-scanner`
 
+5. You can uninstall the program by running the uninstallation script.
+    - `# ./uninstall.sh`
+
 You can now see if your service is running with: `# systemctl status arp-network-scanner`, or see its logs with `# journalctl -u arp-network-scanner`.
     
 ## Usage
 
 1. Start the service and keep it running.
 
-2. To list the unused IPs you can use the evaluation script with command `# evalarp` This command supports an option to select how old the listed data is. By default 2 weeks is used. Use `-d {number of days}`, to filter by days `-w {number of weeks}` to filter by weeks and `-m {number of months}` to filter by months. E.g. `# evalarp -d 2`. `# evalarp -a` can be used to list all records in the application.
+2. To list the unused IPs you can use the evaluation script with command `# evalarp` This command supports an option to select how old the listed data is. By default 2 weeks is used. Use `-h {number of hours}` `-d {number of days}`, to filter by days `-w {number of weeks}` to filter by weeks and `-m {number of months}` to filter by months. E.g. `# evalarp -d 2`. `# evalarp -a` can be used to list all records in the application.
+
+3. You can list never seen IPs in your networks by issuing `# evalarp -n` command.
+
+*Note: this program only scans active ethernet interfaces named either eth# or enp0s#*
 
 ## How it works
 
