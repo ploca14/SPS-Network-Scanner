@@ -2,3 +2,4 @@ scapy==2.4.5
 tabulate==0.8.10
 tinydb==4.7.0
 tinydb-serialization==2.1.0
+netaddr

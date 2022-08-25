@@ -1,7 +1,9 @@
 import logging
-import os
+import sched
+import ipaddress
 from scapy.all import *
-from scapy.all import ARP
+from scapy.layers.l2 import arping
+import scapy.interfaces
 from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
 from tinydb_serialization import SerializationMiddleware
@@ -12,23 +14,47 @@ serialization = SerializationMiddleware(JSONStorage)
 serialization.register_serializer(DateTimeSerializer(), 'TinyDate')
 
 file_path = os.path.dirname(__file__)
-db = TinyDB(file_path + '/db.json', storage=serialization)
+db = TinyDB(file_path + '/arp-network-scanner-db.json', storage=serialization)
+
+networks = {}
+for iface in scapy.interfaces.get_working_ifaces():
+    if 'eth' in iface.name or 'enp' in iface.name:
+        nmcmd = "ifconfig %s | grep netmask | awk {'print $4'}" % (iface.name)
+        netmask = subprocess.Popen(nmcmd, shell=True, stdout=subprocess.PIPE)
+        netmask = netmask.stdout.read()
+        netmask = str(netmask).strip('b').strip('\'').strip('\\n')
+        ip = iface.ip
+        if ip is not None:
+            networks[iface.name] = ipaddress.IPv4Network(iface.ip + '/' + netmask, False)
+
+
+s = sched.scheduler(time.time, time.sleep)
 
 def main():
-    logger.info("Started sniffing")
-    sniff(prn=arp_monitor_callback, filter="arp", store=0)
+    logger.info("Started arp scanner")
+    logger.info("Found following ethernet ifaces: " + str(networks.keys()))
+    try:
+        s.enter(1, 1, arpscan, (s,))
+        s.run()
+    except Exception as e:
+        logger.info("Stopping arp scanner")
+        exit(0)
 
-def arp_monitor_callback(pkt):
-    if ARP in pkt:
-        ip = pkt.sprintf("%ARP.psrc%")
-        mac = pkt.sprintf("%ARP.hwsrc%")
-        iface = pkt.sniffed_on.description
+def arpscan(sc):
+    for iface, network in networks.items():
+        ping = arping(network.with_prefixlen)
 
-        Record = Query()
-        db.upsert({
-            'iface': iface,
-            'ip': ip,
-            'mac': mac,
-            'lastSeen': datetime.now(),
-        }, Record.ip == ip)
-        logger.info(pkt.sprintf(" Sniffed arp packet from: %ARP.hwsrc% %ARP.psrc%"))
+        for pkt in ping[0]:
+            ip = pkt.answer.sprintf("%ARP.psrc%")
+            mac = pkt.answer.sprintf("%ARP.hwsrc%")
+
+            Record = Query()
+            db.upsert({
+                'iface': iface,
+                'ip': ip,
+                'mac': mac,
+                'lastSeen': datetime.now(),
+            }, Record.ip == ip)
+        logger.info("Finished arping on iface: " + iface)
+
+    sc.enter(15*60, 1, arpscan, (sc,))

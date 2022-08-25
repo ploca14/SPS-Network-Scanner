@@ -17,8 +17,15 @@ case $1 in
     UNIT="m"
     LENGTH="$2"
     ;;
+  -h| --hour)
+    UNIT="h"
+    LENGTH="$2"
+    ;;
   -a| --all)
     UNIT="a"
+    ;;
+  -n| --notseen)
+    UNIT="n"
     ;;
   -*|--*)
     echo "Unknown option: $1"
