@@ -1,12 +1,13 @@
 #!/bin/bash
 
 mkdir /usr/local/lib/arp-network-scanner
-cp requirements.txt evaluate.py scanner.py service.py /usr/local/lib/arp-network-scanner
+cp requirements.txt evaluate.py scanner.py service.py interfaces.py /usr/local/lib/arp-network-scanner
 cp evalarp /usr/bin
 chown root:root /usr/local/lib/arp-network-scanner/service.py
 chown root:root /usr/bin/evalarp
 chmod 644 /usr/local/lib/arp-network-scanner/service.py
 chmod +x /usr/bin/evalarp
+touch /usr/local/lib/arp-network-scanner/config
 
 cp -v arp-network-scanner.service /etc/systemd/system/
 chown root:root /etc/systemd/system/arp-network-scanner.service

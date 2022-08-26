@@ -29,11 +29,21 @@ You can now see if your service is running with: `# systemctl status arp-network
 
 3. You can list never seen IPs in your networks by issuing `# evalarp -n` command.
 
-*Note: this program only scans active ethernet interfaces named either eth# or enp0s#*
+### Configuration
+
+By default the application scans on all available **physical** interfaces. If you want to configure which interfaces will be scanned, you can list them in `/usr/local/lib/arp-network-scanner/config` separeted by a line break.
+
+Example `/usr/local/lib/arp-network-scanner/config`:
+
+```
+eth0
+eth1
+eth3
+```
 
 ## How it works
 
-Once you start the service the Python script will constantly monitor all interfaces on a machine and on every ARP request it sees it will store the IP binding and timestamp to a small database. The `evalarp` command then evaluates the data in the database, showing you which IPs have not been used for a specified amount of time.
+Once you start the service the Python script will send a ARP query every 15 minutes to all IPs in a network of selected interfaces. Answers are saved into a small database. The evalarp command then evaluates the data in the database, showing you which IPs have not been used for a specified amount of time or IPs that aren't being used at all.
 
 ## Credits
 
