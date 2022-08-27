@@ -21,6 +21,7 @@ def getInterfaces():
 def getInetfacesNetworks():
     ifaddresses = defaultdict(set)
     for iface in getInterfaces():
+        iface.strip('\n')
         try:
             addrs = netifaces.ifaddresses(iface)
         except ValueError as err:
