@@ -9,8 +9,7 @@ file_path = dirname(__file__)
 def getInterfaces():
     interfaces = []
     with open(file_path + '/config', encoding = 'utf-8') as f:
-        interfaces = f.read().splitlines()
-        interfaces = [iface for iface in interfaces if iface]
+        interfaces = [line for line in f.read().splitlines() if line]
     
     if not interfaces:
         for i in listdir("/sys/class/net"):
