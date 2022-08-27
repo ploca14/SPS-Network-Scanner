@@ -20,8 +20,11 @@ def getInterfaces():
 
 def getInetfacesNetworks():
     ifaddresses = defaultdict(set)
-    for iface in getInterfaces():
-        iface.strip('\n')
+    ifaces = getInterfaces()
+
+    for iface in ifaces:
+        iface = iface.strip('\n')
+        print(iface)
         try:
             addrs = netifaces.ifaddresses(iface)
         except ValueError as err:
