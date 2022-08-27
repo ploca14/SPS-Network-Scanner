@@ -9,7 +9,8 @@ file_path = dirname(__file__)
 def getInterfaces():
     interfaces = []
     with open(file_path + '/config', encoding = 'utf-8') as f:
-        interfaces = f.readlines()
+        interfaces = f.read().splitlines()
+        interfaces = [iface for iface in interfaces if iface]
     
     if not interfaces:
         for i in listdir("/sys/class/net"):
@@ -23,15 +24,16 @@ def getInetfacesNetworks():
     ifaces = getInterfaces()
 
     for iface in ifaces:
-        iface = iface.strip('\n')
-        print(iface)
         try:
             addrs = netifaces.ifaddresses(iface)
         except ValueError as err:
             print(str(err))
             exit(1)
-        addrs = addrs[netifaces.AF_INET]
-        for addr in addrs:
-            network = ipaddress.IPv4Network(addr['addr'] + '/' + addr['netmask'], False)
-            ifaddresses[iface].add(network)
+        addrs = addrs.get(netifaces.AF_INET)
+        if addrs:
+            for addr in addrs:
+                network = ipaddress.IPv4Network(addr['addr'] + '/' + addr['netmask'], False)
+                ifaddresses[iface].add(network)
     return ifaddresses
+
+getInetfacesNetworks()
